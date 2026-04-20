@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Car Racing Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial;
+      background: #111;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    #gameArea {
+      width: 300px;
+      height: 500px;
+      background: #222;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid white;
+    }
+
+    #car {
+      width: 40px;
+      height: 60px;
+      background: red;
+      position: absolute;
+      bottom: 10px;
+      left: 130px;
+      border-radius: 5px;
+    }
+
+    .enemy {
+      width: 40px;
+      height: 60px;
+      background: yellow;
+      position: absolute;
+      top: -60px;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin: 5px;
+    }
+
+    #controls {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>🚗 Car Racing Game</h2>
+
+<p>Score: <span id="score">0</span></p>
+<p>High Score: <span id="highScore">0</span></p>
+
+<button onclick="startGame()">Start Game</button>
+
+<div id="gameArea">
+  <div id="car"></div>
+</div>
+
+<!-- Touch Controls -->
+<div id="controls">
+  <button onclick="moveLeft()">⬅️ Left</button>
+  <button onclick="moveRight()">➡️ Right</button>
+</div>
+
+<script>
+let car = document.getElementById("car");
+let gameArea = document.getElementById("gameArea");
+
+let scoreDisplay = document.getElementById("score");
+let highScoreDisplay = document.getElementById("highScore");
+
+let score = 0;
+let highScore = localStorage.getItem("carHighScore") || 0;
+highScoreDisplay.textContent = highScore;
+
+let carX = 130;
+let gameInterval;
+let enemyInterval;
+
+// KEYBOARD CONTROL
+document.addEventListener("keydown", function(e) {
+  if (e.key === "ArrowLeft") moveLeft();
+  if (e.key === "ArrowRight") moveRight();
+});
+
+// TOUCH SWIPE CONTROL
+let startX = 0;
+
+document.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].clientX;
+});
+
+document.addEventListener("touchend", (e) => {
+  let endX = e.changedTouches[0].clientX;
+
+  if (startX - endX > 30) moveLeft();
+  if (endX - startX > 30) moveRight();
+});
+
+// MOVE FUNCTIONS
+function moveLeft() {
+  if (carX > 0) {
+    carX -= 20;
+    car.style.left = carX + "px";
+  }
+}
+
+function moveRight() {
+  if (carX < 260) {
+    carX += 20;
+    car.style.left = carX + "px";
+  }
+}
+
+// ENEMY CREATION
+function createEnemy() {
+  let enemy = document.createElement("div");
+  enemy.classList.add("enemy");
+  enemy.style.left = Math.floor(Math.random() * 260) + "px";
+  gameArea.appendChild(enemy);
+
+  let move = setInterval(() => {
+    let enemyTop = enemy.offsetTop;
+    enemy.style.top = enemyTop + 5 + "px";
+
+    // Collision
+    if (
+      enemyTop > 420 &&
+      enemy.offsetLeft < carX + 40 &&
+      enemy.offsetLeft + 40 > carX
+    ) {
+      endGame();
+    }
+
+    if (enemyTop > 500) {
+      enemy.remove();
+    }
+  }, 20);
+}
+
+// START GAME
+function startGame() {
+  score = 0;
+  carX = 130;
+  car.style.left = carX + "px";
+
+  scoreDisplay.textContent = score;
+
+  gameInterval = setInterval(() => {
+    score++;
+    scoreDisplay.textContent = score;
+  }, 200);
+
+  enemyInterval = setInterval(createEnemy, 900);
+}
+
+// END GAME
+function endGame() {
+  clearInterval(gameInterval);
+  clearInterval(enemyInterval);
+
+  alert("Game Over! Score: " + score);
+
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem("carHighScore", highScore);
+  }
+
+  highScoreDisplay.textContent = highScore;
+
+  location.reload();
+}
+</script>
+
+</body>
+</html>
