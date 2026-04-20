@@ -35,19 +35,17 @@
     #lane1 { left: 100px; }
     #lane2 { left: 200px; }
 
-    /* player car */
-    <div id="car">
-  <img src="player_car.jpg" width="40" height="70">
-</div>
-
+   #car {
+      width: 40px;
+      height: 60px;
+      position: absolute;
+    }
     /* enemy cars */
      .enemy {
       width: 40px;
       height: 60px;
-      background: yellow;
       position: absolute;
       top: -60px;
-      border-radius: 5px;
     }
     button {
       padding: 10px 15px;
@@ -74,8 +72,9 @@
   <div class="lane-line" id="lane1"></div>
   <div class="lane-line" id="lane2"></div>
 
-  <div id="car"></div>
-</div>
+  <div id="car">
+  <img src="player_car.jpg" width="40" height="70">
+  </div>
 
 <div id="controls">
   <button onclick="moveLeft()">⬅️</button>
