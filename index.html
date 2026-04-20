@@ -35,11 +35,13 @@
     #lane1 { left: 100px; }
     #lane2 { left: 200px; }
 
-   #car {
-      width: 40px;
-      height: 60px;
-      position: absolute;
-    }
+  #car {
+  width: 40px;
+  height: 70px;
+  position: absolute;
+  bottom: 10px;
+  left: 130px;
+ }
     /* enemy cars */
      .enemy {
       width: 40px;
@@ -60,8 +62,7 @@
 </head>
 
 <body>
-
-<h2>🚗 Lane Racing Game</h2>
+<h2>🚗 Car Racing Game</h2>
 
 <p>Score: <span id="score">0</span></p>
 <p>High Score: <span id="highScore">0</span></p>
@@ -69,16 +70,13 @@
 <button onclick="startGame()">Start Game</button>
 
 <div id="gameArea">
-  <div class="lane-line" id="lane1"></div>
-  <div class="lane-line" id="lane2"></div>
+  <div id="car"></div>
+</div>
 
-  <div id="car">
-  <img src="player_car.jpg" width="40" height="70">
-  </div>
-
+<!-- Touch Controls -->
 <div id="controls">
-  <button onclick="moveLeft()">⬅️</button>
-  <button onclick="moveRight()">➡️</button>
+  <button onclick="moveLeft()">⬅️ Left</button>
+  <button onclick="moveRight()">➡️ Right</button>
 </div>
 
 <script>
