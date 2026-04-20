@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Lane Car Racing Game</title>
+  <title>Car Racing Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
     body {
       text-align: center;
@@ -11,44 +10,38 @@
       background: #111;
       color: white;
       margin: 0;
+      padding: 0;
     }
 
     #gameArea {
       width: 300px;
       height: 500px;
-      background: #333;
+      background: #222;
       margin: 20px auto;
       position: relative;
       overflow: hidden;
       border: 2px solid white;
     }
 
-    /* road lanes */
-    .lane-line {
-      position: absolute;
-      width: 2px;
-      height: 100%;
-      background: #555;
-      top: 0;
-    }
-
-    #lane1 { left: 100px; }
-    #lane2 { left: 200px; }
-
-  #car {
-  width: 40px;
-  height: 70px;
-  position: absolute;
-  bottom: 10px;
-  left: 130px;
- }
-    /* enemy cars */
-     .enemy {
+    #car {
       width: 40px;
       height: 60px;
+      background: red;
+      position: absolute;
+      bottom: 10px;
+      left: 130px;
+      border-radius: 5px;
+    }
+
+    .enemy {
+      width: 40px;
+      height: 60px;
+      background: yellow;
       position: absolute;
       top: -60px;
+      border-radius: 5px;
     }
+
     button {
       padding: 10px 15px;
       font-size: 16px;
@@ -60,8 +53,8 @@
     }
   </style>
 </head>
-
 <body>
+
 <h2>🚗 Car Racing Game</h2>
 
 <p>Score: <span id="score">0</span></p>
@@ -81,26 +74,26 @@
 
 <script>
 let car = document.getElementById("car");
+let gameArea = document.getElementById("gameArea");
+
 let scoreDisplay = document.getElementById("score");
 let highScoreDisplay = document.getElementById("highScore");
 
 let score = 0;
-let highScore = localStorage.getItem("laneHighScore") || 0;
+let highScore = localStorage.getItem("carHighScore") || 0;
 highScoreDisplay.textContent = highScore;
 
-let lanes = [60, 130, 200]; // 3 lanes
-let laneIndex = 1; // start center lane
-
+let carX = 130;
 let gameInterval;
 let enemyInterval;
 
-// keyboard control
-document.addEventListener("keydown", (e) => {
+// KEYBOARD CONTROL
+document.addEventListener("keydown", function(e) {
   if (e.key === "ArrowLeft") moveLeft();
   if (e.key === "ArrowRight") moveRight();
 });
 
-// swipe control
+// TOUCH SWIPE CONTROL
 let startX = 0;
 
 document.addEventListener("touchstart", (e) => {
@@ -114,54 +107,52 @@ document.addEventListener("touchend", (e) => {
   if (endX - startX > 30) moveRight();
 });
 
-// move car between lanes
-function updateCar() {
-  car.style.left = lanes[laneIndex] + "px";
-}
-
+// MOVE FUNCTIONS
 function moveLeft() {
-  if (laneIndex > 0) {
-    laneIndex--;
-    updateCar();
+  if (carX > 0) {
+    carX -= 20;
+    car.style.left = carX + "px";
   }
 }
 
 function moveRight() {
-  if (laneIndex < lanes.length - 1) {
-    laneIndex++;
-    updateCar();
+  if (carX < 260) {
+    carX += 20;
+    car.style.left = carX + "px";
   }
 }
 
+// ENEMY CREATION
 function createEnemy() {
   let enemy = document.createElement("div");
   enemy.classList.add("enemy");
-
-  enemy.innerHTML = `<img src="enemy_car.jpg" width="40" height="70">`;
-
-  let lane = Math.floor(Math.random() * 3);
-  enemy.style.left = lanes[lane] + "px";
-
-  document.getElementById("gameArea").appendChild(enemy);
+  enemy.style.left = Math.floor(Math.random() * 260) + "px";
+  gameArea.appendChild(enemy);
 
   let move = setInterval(() => {
-    enemy.style.top = enemy.offsetTop + 6 + "px";
+    let enemyTop = enemy.offsetTop;
+    enemy.style.top = enemyTop + 5 + "px";
 
-    if (enemy.offsetTop > 420 && lane === laneIndex) {
+    // Collision
+    if (
+      enemyTop > 420 &&
+      enemy.offsetLeft < carX + 40 &&
+      enemy.offsetLeft + 40 > carX
+    ) {
       endGame();
     }
 
-    if (enemy.offsetTop > 500) {
+    if (enemyTop > 500) {
       enemy.remove();
-      clearInterval(move);
     }
   }, 20);
 }
-// start game
+
+// START GAME
 function startGame() {
   score = 0;
-  laneIndex = 1;
-  updateCar();
+  carX = 130;
+  car.style.left = carX + "px";
 
   scoreDisplay.textContent = score;
 
@@ -170,10 +161,10 @@ function startGame() {
     scoreDisplay.textContent = score;
   }, 200);
 
-  enemyInterval = setInterval(createEnemy, 800);
+  enemyInterval = setInterval(createEnemy, 900);
 }
 
-// end game
+// END GAME
 function endGame() {
   clearInterval(gameInterval);
   clearInterval(enemyInterval);
@@ -182,16 +173,13 @@ function endGame() {
 
   if (score > highScore) {
     highScore = score;
-    localStorage.setItem("laneHighScore", highScore);
+    localStorage.setItem("carHighScore", highScore);
   }
 
   highScoreDisplay.textContent = highScore;
 
   location.reload();
 }
-
-// init position
-updateCar();
 </script>
 
 </body>
