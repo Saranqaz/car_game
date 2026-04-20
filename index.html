@@ -36,28 +36,14 @@
     #lane2 { left: 200px; }
 
     /* player car */
-    #car {
-      width: 35px;
-      height: 55px;
-      background: linear-gradient(red, darkred);
-      position: absolute;
-      bottom: 10px;
-      left: 130px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px red;
-    }
+    <div id="car">
+    <img src="player_car.jpg" width="40" height="70">
+    </div>
 
     /* enemy cars */
-    .enemy {
-      width: 35px;
-      height: 55px;
-      background: linear-gradient(yellow, orange);
-      position: absolute;
-      top: -60px;
-      border-radius: 8px;
-      box-shadow: 0 0 8px yellow;
-    }
-
+     <div id="car">
+    <img src="enemy_car.jpg" width="40" height="70">
+    </div>
     button {
       padding: 10px 15px;
       font-size: 16px;
@@ -145,35 +131,30 @@ function moveRight() {
   }
 }
 
-// enemy cars
 function createEnemy() {
   let enemy = document.createElement("div");
   enemy.classList.add("enemy");
 
-  let enemyLane = Math.floor(Math.random() * 3);
-  enemy.style.left = lanes[enemyLane] + "px";
+  enemy.innerHTML = `<img src="enemy_car.jpg" width="40" height="70">`;
+
+  let lane = Math.floor(Math.random() * 3);
+  enemy.style.left = lanes[lane] + "px";
 
   document.getElementById("gameArea").appendChild(enemy);
 
   let move = setInterval(() => {
-    let top = enemy.offsetTop;
-    enemy.style.top = top + 6 + "px";
+    enemy.style.top = enemy.offsetTop + 6 + "px";
 
-    // collision
-    if (
-      top > 420 &&
-      enemyLane === laneIndex
-    ) {
+    if (enemy.offsetTop > 420 && lane === laneIndex) {
       endGame();
     }
 
-    if (top > 500) {
+    if (enemy.offsetTop > 500) {
       enemy.remove();
       clearInterval(move);
     }
   }, 20);
 }
-
 // start game
 function startGame() {
   score = 0;
